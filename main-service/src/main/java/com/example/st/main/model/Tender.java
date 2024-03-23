@@ -47,19 +47,19 @@ public class Tender {
      * Дата начала тендера.
      */
     @Column
-    private LocalDateTime start_date;
+    private LocalDateTime startDate;
 
     /**
      * Дата окончания тендера.
      */
     @Column
-    private LocalDateTime end_date;
+    private LocalDateTime endDate;
 
     /**
      * Дата публикации тендера.
      */
     @Column
-    private LocalDateTime publish_date;
+    private LocalDateTime publishDate;
 
     /**
      * Название компании, проводящей тендер.
@@ -77,7 +77,7 @@ public class Tender {
      * Начальная цена тендера.
      */
     @Column
-    private String start_price;
+    private String startPrice;
 
     /**
      * Код тендера.

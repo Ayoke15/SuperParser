@@ -26,14 +26,16 @@ public class TenderMapper {
             .currency(tender.getCurrency())
             .status(tender.getStatus())
             .name(tender.getName())
-            .startDate(tender.getStart_date() != null ? tender.getStart_date().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
-            .endDate(tender.getEnd_date() != null ? tender.getEnd_date().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
-            .publishDate(tender.getPublish_date() != null ? tender.getPublish_date().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
+            .startDate(tender.getStartDate() != null ? tender.getStartDate().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
+            .endDate(tender.getEndDate() != null ? tender.getEndDate().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
+            .publishDate(tender.getPublishDate() != null ? tender.getPublishDate().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
             .company(tender.getCompany())
             .link(tender.getLink())
-            .startPrice(tender.getStart_price())
+            .startPrice(tender.getStartPrice())
             .code(tender.getCode())
             .build();
     }
+
+
 }
 
