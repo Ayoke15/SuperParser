@@ -20,6 +20,7 @@ public class Tender {
      * Уникальный идентификатор тендера, содержит код тендера.
      */
     @Id
+    @Column(name = "code")
     private String code;
 
     /**
@@ -31,7 +32,7 @@ public class Tender {
     /**
      * Статус тендера.
      */
-    //    @JoinColumn(name = "id")
+    @JoinColumn(name = "status_id")
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     private Status status;
@@ -39,43 +40,42 @@ public class Tender {
     /**
      * Название тендера.
      */
-    @Column
+    @Column(name = "name")
     private String name;
 
     /**
      * Дата начала тендера.
      */
-    @Column
+    @Column(name = "start_date")
     private LocalDateTime startDate;
 
     /**
      * Дата окончания тендера.
      */
-    @Column
+    @Column(name = "end_date")
     private LocalDateTime endDate;
 
     /**
      * Дата публикации тендера.
      */
-    @Column
+    @Column(name = "publish_date")
     private LocalDateTime publishDate;
 
     /**
      * Название компании, проводящей тендер.
      */
-    @Column
+    @Column(name = "company")
     private String company;
 
     /**
      * Ссылка на тендер.
      */
-    @Column
+    @Column(name = "link")
     private String link;
 
     /**
      * Начальная цена тендера.
      */
-    @Column
+    @Column(name = "start_price")
     private String startPrice;
-
 }
