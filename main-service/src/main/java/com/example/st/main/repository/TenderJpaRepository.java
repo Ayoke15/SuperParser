@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
  * Интерфейс репозитория для работы с данными тендеров в базе данных.
  */
 @Repository
-public interface TenderJpaRepository extends JpaRepository<Tender, Long> {
+public interface TenderJpaRepository extends JpaRepository<Tender, String> {
+
+
 
 }
 

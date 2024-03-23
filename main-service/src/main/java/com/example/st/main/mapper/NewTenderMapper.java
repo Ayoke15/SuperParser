@@ -1,5 +1,6 @@
 package com.example.st.main.mapper;
 
+import com.example.st.main.dto.NewTenderDto;
 import com.example.st.main.dto.TenderDto;
 import com.example.st.main.model.Tender;
 
@@ -19,9 +20,9 @@ public class NewTenderMapper {
      * @param tenderDto объект TenderDto
      * @return объект Tender
      */
-    public static Tender toTender(TenderDto tenderDto) {
+    public static Tender toTender(NewTenderDto tenderDto) {
         return Tender.builder()
-            .currency(tenderDto.getCurrency())
+            .currency(tenderDto .getCurrency())
             .status(tenderDto.getStatus())
             .name(tenderDto.getName())
             .startDate(LocalDateTime.parse(tenderDto.getStartDate(), DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)))

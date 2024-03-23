@@ -21,6 +21,11 @@ public class TenderDto {
     private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     /**
+     * Уникальный код тендера, по которому тендер можно индентифицировать.
+     */
+    private String code;
+
+    /**
      * Валюта тендера.
      */
     private Currency currency;
@@ -67,9 +72,4 @@ public class TenderDto {
      * Начальная цена тендера.
      */
     private String startPrice;
-
-    /**
-     * Код тендера.
-     */
-    private String code;
 }

@@ -17,11 +17,10 @@ import java.time.LocalDateTime;
 @Table(name = "tender")
 public class Tender {
     /**
-     * Уникальный идентификатор тендера.
+     * Уникальный идентификатор тендера, содержит код тендера.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String code;
 
     /**
      * Валюта тендера.
@@ -79,9 +78,4 @@ public class Tender {
     @Column
     private String startPrice;
 
-    /**
-     * Код тендера.
-     */
-    @Column
-    private String code;
 }
