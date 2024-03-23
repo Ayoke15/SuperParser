@@ -58,4 +58,19 @@ public class Controller {
         tenderService.postTender(newTenderDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    /**
+     * Обрабатывает POST-запрос для создания нового тендера.
+     *
+     * @param newTenderDtos список объектов newTenderDtos, хранящих данные новых тендеров
+     * @return ответ об успешном создании тендеров
+     */
+    @PostMapping("/create-tenders")
+    ResponseEntity<Void> postTenderList(
+        @RequestBody @Validated List<NewTenderDto> newTenderDtos
+    ) {
+        log.info("create-tenders request accepted, newTenderDtos size {}", newTenderDtos.size());
+        tenderService.postTenderList(newTenderDtos);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 }

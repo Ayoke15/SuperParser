@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Класс, предоставляющий реализацию методов для работы с тендерами.
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class TenderServiceImpl implements TenderService{
+public class TenderServiceImpl implements TenderService {
     private TenderJpaRepository tenderJpaRepository;
 
     /**
@@ -34,7 +33,7 @@ public class TenderServiceImpl implements TenderService{
      */
     @Override
     public List<TenderDto> getAllTenders(Pageable page) {
-        List<TenderDto> tenderDtos = tenderJpaRepository.findAll().stream().map(TenderMapper::toTenderDto).collect(Collectors.toList());
+        List<TenderDto> tenderDtos = tenderJpaRepository.findAll().stream().map(TenderMapper::toTenderDto).toList();
         log.info("get-all-tenders request completed for tenderList:{}", tenderDtos);
         return tenderDtos;
     }
@@ -49,6 +48,21 @@ public class TenderServiceImpl implements TenderService{
         try {
             Tender tender = tenderJpaRepository.save(NewTenderMapper.toTender(newTenderDto));
             log.info("create-tender request completed for tender:{}", tender);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new ConflictException(e.getMessage());
+        }
+    }
+
+    /**
+     * Добавляет новые тендеры на основе переданного списка объектов NewTenderDto.
+     *
+     * @param newTenderDtos список объектов NewTenderDto, содержащий информацию о новых тендерах.
+     */
+    @Override
+    public void postTenderList(List<NewTenderDto> newTenderDtos) {
+        try {
+            tenderJpaRepository.saveAll(newTenderDtos.stream().map(NewTenderMapper::toTender).toList());
+            log.info("create-tenders request completed for tender list with size {}", newTenderDtos.size());
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new ConflictException(e.getMessage());
         }

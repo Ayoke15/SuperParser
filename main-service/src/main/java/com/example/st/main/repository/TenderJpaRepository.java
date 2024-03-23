@@ -10,7 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TenderJpaRepository extends JpaRepository<Tender, String> {
 
-
-
 }
 

@@ -15,7 +15,6 @@ public interface TenderService {
      * Получает список всех тендеров в виде объектов TenderDto.
      *
      * @param page Объект Pageable, содержащий информацию о странице
-     *
      * @return список всех тендеров
      */
     List<TenderDto> getAllTenders(Pageable page);
@@ -26,4 +25,11 @@ public interface TenderService {
      * @param newTenderDto объект TenderDto, содержащий информацию о новом тендере
      */
     void postTender(NewTenderDto newTenderDto);
+
+    /**
+     * Добавляет новые тендеры на основе списка переданных объектов newTenderDto.
+     *
+     * @param newTenderDto список объектов NewTenderDto, содержащих информацию о новых тендерах
+     */
+    void postTenderList(List<NewTenderDto> newTenderDto);
 }
