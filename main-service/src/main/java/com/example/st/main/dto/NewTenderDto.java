@@ -38,7 +38,7 @@ public class NewTenderDto {
      * Название тендера.
      */
     @NotNull(message = "name may not be null")
-    @Size(max = 2000, min = 20, message = "name size should be between 20 and 2000 symbols")
+    @Size(max = 2000, min = 15, message = "name size should be between 15 and 2000 symbols")
     private String name;
 
     /**

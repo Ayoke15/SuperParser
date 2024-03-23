@@ -18,3 +18,7 @@ create table tender
     start_price  varchar(255),
     foreign key (status_id) references status (id)
 );
+
+
+INSERT INTO status (name) VALUES ('Активный');
+INSERT INTO status (name) VALUES ('Неактивный');

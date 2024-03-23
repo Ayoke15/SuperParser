@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "tender")
+@ToString
 public class Tender {
     /**
      * Уникальный идентификатор тендера, содержит код тендера.
