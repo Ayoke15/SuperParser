@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 public class TenderCreationClient {
     private static final String API_PREFIX = "/";
+    private static final String SERVER_URL = "server.url=http://localhost:8080";
     private final RestTemplate restTemplate;
 
     /**
@@ -25,7 +26,7 @@ public class TenderCreationClient {
      * @param serverUrl URL-адрес сервера
      * @param builder   Построитель RestTemplate
      */
-    public TenderCreationClient(@Value("${server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public TenderCreationClient(@Value(SERVER_URL) String serverUrl, RestTemplateBuilder builder) {
         this.restTemplate = builder
             .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
             .requestFactory(() -> new HttpComponentsClientHttpRequestFactory())
