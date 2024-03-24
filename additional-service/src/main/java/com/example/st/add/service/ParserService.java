@@ -1,7 +1,9 @@
 package com.example.st.add.service;
 
 import com.example.st.add.model.Currency;
+import com.example.st.add.model.Status;
 import com.example.st.add.model.Tender;
+import com.example.st.add.model.Xpath;
 import com.example.st.add.repository.StatusRepository;
 import com.example.st.add.repository.TenderRepository;
 import com.example.st.add.repository.XpathRepository;
@@ -11,10 +13,14 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ParserService {
@@ -34,48 +40,86 @@ public class ParserService {
         this.xpathRepository = xpathRepository;
     }
 
-    public List<Tender> parseTatneft() {
-        webDriver.get("https://etp.tatneft.ru/pls/tzp/f?p=220:562:8376086794241::::P562_OPEN_MODE,GLB_NAV_ROOT_ID,GLB_NAV_ID:,12920020,12920020");
-        WebElement tendersSwitch = webDriver.findElement(By.xpath("//*[@id=\"P562_BARGAINING_TYPE\"]/option[5]"));
-        tendersSwitch.click();
-        WebElement nextPageButton = webDriver.findElement(By.xpath("//*[@id=\"R25399004548800692_data_panel\"]/div[2]/ul/li[3]/button"));
-        boolean isLastPage = false;
-
-        while (!isLastPage) {
-            parseTatneftPage();
-            if (nextPageButton.isDisplayed()) {
-                nextPageButton.click();
-            } else {
-                isLastPage = true;
-            }
-        }
+    public List<Tender> parseWebsite() {
+//        boolean isLastPage = false;
+//        while (!isLastPage) {
+//            parsePage();
+//            if (nextPageButton.isDisplayed()) {
+//                nextPageButton.click();
+//            } else {
+//                isLastPage = true;
+//            }
+//        }
         return tenderRepository.findAll();
     }
 
-    public List<Tender> parseTatneftPage() {
-        List<WebElement> rows = webDriver.findElements(By.xpath("//*[@id='25399118176800742']/tbody/tr[position() >= 2 and position() <= 15]"));
+//    public List<Tender> parsePage() {
+//        List<Tender> tenders = new ArrayList<>();
+//        List<Xpath> xpathList = xpathRepository.findAll();
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+//
+//        //TODO Поменять на Thread pool
+//        for (Xpath xpath : xpathList) {
+//            webDriver.get(xpath.getLink_site());
+//
+//            WebElement tendersSwitch = webDriver.findElement(By.xpath("//*[@id=\"P562_BARGAINING_TYPE\"]/option[5]"));
+//            tendersSwitch.click();
+//
+//            List<String> codes = extractText(xpath.getCode());
+//            List<String> statuses = extractText(xpath.getStatus());
+//            List<String> names = extractText(xpath.getName());
+//            List<LocalDateTime> startDates = extractText(xpath.getStart_date());
+//            List<LocalDateTime> endDates = extractText(xpath.getEnd_date())
+//                    .stream()
+//                    .filter(date -> !date.isEmpty())
+//                    .map(date -> LocalDateTime.parse(date, formatter))
+//                    .toList();
+//            List<LocalDateTime> publishDates = extractText(xpath.getPublish_date())
+//                    .stream()
+//                    .filter(date -> !date.isEmpty())
+//                    .map(date -> LocalDateTime.parse(date, formatter))
+//                    .toList();
+//
+//            List<LocalDateTime> parsedStartDates = new ArrayList<>();
+//            for (String date : startDates) {
+//                if (!date.isEmpty()) {
+//                    parsedStartDates.add(LocalDateTime.parse(date, formatter));
+//                }
+//            }
+//            List<String> companies = extractText(xpath.getCompany());
+//            List<String> links = extractText(xpath.getLink());
+//
+//            for (LocalDateTime date : startDates) {
+//                System.out.println(date);
+//            }
+//
+//            for (int i = 0; i < codes.size(); i++) {
+//                Tender tender = Tender.builder()
+//                        .code(codes.get(i))
+//                        .currency(Currency.RUB)
+//                        .status(statusRepository.findByName(statuses.get(i)))
+//                        .name(names.get(i))
+//                        .start_date(startDates.get(i))
+//                        .end_date(endDates.get(i))
+//                        .publish_date(publishDates.get(i))
+//                        .company(companies.get(i))
+//                        .link(links.get(i))
+//                        .build();
+//                tenders.add(tender);
+//            }
+//        }
+//        return tenders;
+////        return tenderRepository.saveAll(tenders);
+//    }
 
-        List<Tender> tenders = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        for (WebElement row : rows) {
-            List<WebElement> tenderInfo = row.findElements(By.tagName("td"));
-
-            LocalDateTime publishDate = LocalDateTime.parse(tenderInfo.get(7).getText(), formatter);
-            LocalDateTime startDate = !tenderInfo.get(8).getText().isEmpty() ? LocalDateTime.parse(tenderInfo.get(8).getText(), formatter) : null;
-            LocalDateTime endDate = LocalDateTime.parse(tenderInfo.get(9).getText(), formatter);
-
-            tenders.add(Tender.builder()
-                    .code(tenderInfo.get(1).getText())
-                    .name(tenderInfo.get(2).getText())
-                    .status(statusRepository.findByName(tenderInfo.get(3).getText()))
-                    .company(tenderInfo.get(4).getText())
-                    .start_price(tenderInfo.get(5) != null ? tenderInfo.get(5).getText() : null)
-                    .currency(Currency.RUB)
-                    .publish_date(publishDate)
-                    .start_date(startDate)
-                    .end_date(endDate)
-                    .build());
+    private List<String> extractText(String xpath) {
+        List<WebElement> elements = webDriver.findElements(By.xpath(xpath));
+        List<String> elementTexts = new ArrayList<>();
+        for (WebElement element : elements) {
+            elementTexts.add(element.getText());
         }
-        return tenderRepository.saveAll(tenders);
+        return elementTexts;
     }
+
 }
