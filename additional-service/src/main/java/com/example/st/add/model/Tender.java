@@ -92,6 +92,9 @@ public class Tender {
     @Column
     private String code;
 
+    //TODO списком товары
+    //TODO списком условия заказа
+
     @Override
     public String toString() {
         return "Tender{" +
