@@ -25,9 +25,9 @@ public class ActiveAction {
     /**
      * Название статуса.
      */
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
-    private List<Xpath> xpath;
+    private Xpath xpath;
 
     @Column
     @NotNull
