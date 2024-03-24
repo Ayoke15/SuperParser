@@ -1,44 +1,35 @@
 package com.example.st.add.service;
 
-import com.example.st.add.model.Currency;
-import com.example.st.add.model.Status;
-import com.example.st.add.model.Tender;
-import com.example.st.add.model.Xpath;
+
 import com.example.st.add.repository.StatusRepository;
 import com.example.st.add.repository.TenderRepository;
 import com.example.st.add.repository.XpathRepository;
+import lombok.AllArgsConstructor;
+import org.example.st.client.TenderCreationClient;
+import org.example.st.dto.NewTenderDto;
+import org.example.st.model.Currency;
+import org.example.st.model.Tender;
+import org.example.st.model.Xpath;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class ParserService {
     private final WebDriver webDriver;
     private final StatusRepository statusRepository;
     private final TenderRepository tenderRepository;
     private final XpathRepository xpathRepository;
+    private final TenderCreationClient tenderCreationClient;
 
-    @Autowired
-    public ParserService(WebDriver webDriver,
-                         StatusRepository statusRepository,
-                         TenderRepository tenderRepository,
-                         XpathRepository xpathRepository) {
-        this.webDriver = webDriver;
-        this.statusRepository = statusRepository;
-        this.tenderRepository = tenderRepository;
-        this.xpathRepository = xpathRepository;
-    }
 
     public List<Tender> parseWebsite() {
 //        boolean isLastPage = false;
@@ -53,65 +44,43 @@ public class ParserService {
         return tenderRepository.findAll();
     }
 
-//    public List<Tender> parsePage() {
-//        List<Tender> tenders = new ArrayList<>();
-//        List<Xpath> xpathList = xpathRepository.findAll();
-//
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-//
-//        //TODO Поменять на Thread pool
-//        for (Xpath xpath : xpathList) {
-//            webDriver.get(xpath.getLink_site());
-//
-//            WebElement tendersSwitch = webDriver.findElement(By.xpath("//*[@id=\"P562_BARGAINING_TYPE\"]/option[5]"));
-//            tendersSwitch.click();
-//
-//            List<String> codes = extractText(xpath.getCode());
-//            List<String> statuses = extractText(xpath.getStatus());
-//            List<String> names = extractText(xpath.getName());
-//            List<LocalDateTime> startDates = extractText(xpath.getStart_date());
-//            List<LocalDateTime> endDates = extractText(xpath.getEnd_date())
-//                    .stream()
-//                    .filter(date -> !date.isEmpty())
-//                    .map(date -> LocalDateTime.parse(date, formatter))
-//                    .toList();
-//            List<LocalDateTime> publishDates = extractText(xpath.getPublish_date())
-//                    .stream()
-//                    .filter(date -> !date.isEmpty())
-//                    .map(date -> LocalDateTime.parse(date, formatter))
-//                    .toList();
-//
-//            List<LocalDateTime> parsedStartDates = new ArrayList<>();
-//            for (String date : startDates) {
-//                if (!date.isEmpty()) {
-//                    parsedStartDates.add(LocalDateTime.parse(date, formatter));
-//                }
-//            }
-//            List<String> companies = extractText(xpath.getCompany());
-//            List<String> links = extractText(xpath.getLink());
-//
-//            for (LocalDateTime date : startDates) {
-//                System.out.println(date);
-//            }
-//
-//            for (int i = 0; i < codes.size(); i++) {
-//                Tender tender = Tender.builder()
-//                        .code(codes.get(i))
-//                        .currency(Currency.RUB)
-//                        .status(statusRepository.findByName(statuses.get(i)))
-//                        .name(names.get(i))
-//                        .start_date(startDates.get(i))
-//                        .end_date(endDates.get(i))
-//                        .publish_date(publishDates.get(i))
-//                        .company(companies.get(i))
-//                        .link(links.get(i))
-//                        .build();
-//                tenders.add(tender);
-//            }
-//        }
-//        return tenders;
-////        return tenderRepository.saveAll(tenders);
-//    }
+    public ResponseEntity<Void> parsePage() {
+        List<NewTenderDto> tenders = new ArrayList<>();
+        List<Xpath> xpathList = xpathRepository.findAll();
+
+        //TODO Поменять на Thread pool
+        for (Xpath xpath : xpathList) {
+            webDriver.get(xpath.getLink_site());
+
+            WebElement tendersSwitch = webDriver.findElement(By.xpath("//*[@id=\"P562_BARGAINING_TYPE\"]/option[5]"));
+            tendersSwitch.click();
+
+            List<String> codes = extractText(xpath.getCode());
+            List<String> statuses = extractText(xpath.getStatus());
+            List<String> names = extractText(xpath.getName());
+            List<String> startDates = formatDates(extractText(xpath.getStartDate()));
+            List<String> endDates = formatDates(extractText(xpath.getEndDate()));
+            List<String> publishDates = formatDates(extractText(xpath.getPublishDate()));
+            List<String> companies = extractText(xpath.getCompany());
+            List<String> links = extractText(xpath.getLink());
+
+            for (int i = 0; i < codes.size(); i++) {
+                NewTenderDto tenderDto = NewTenderDto.builder()
+                        .code(codes.get(i))
+                        .currency(Currency.RUB)
+                        .status(statusRepository.findByName(statuses.get(i)))
+                        .name(names.get(i))
+                        .startDate(startDates.get(i))
+                        .endDate(endDates.get(i))
+                        .publishDate(publishDates.get(i))
+                        .company(companies.get(i))
+                        .link(links.get(i))
+                        .build();
+                tenders.add(tenderDto);
+            }
+        }
+        return tenderCreationClient.postTendersList(tenders);
+    }
 
     private List<String> extractText(String xpath) {
         List<WebElement> elements = webDriver.findElements(By.xpath(xpath));
@@ -120,6 +89,21 @@ public class ParserService {
             elementTexts.add(element.getText());
         }
         return elementTexts;
+    }
+
+    private List<String> formatDates(List<String> dates) {
+        List<String> formattedDates = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        for (String date : dates) {
+            if (!date.isEmpty()) {
+                LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+                String formattedDate = dateTime.format(formatter);
+                formattedDates.add(formattedDate);
+            } else {
+                formattedDates.add(date);
+            }
+        }
+        return formattedDates;
     }
 
 }

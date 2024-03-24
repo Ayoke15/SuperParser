@@ -44,7 +44,7 @@ public class NewTenderDto {
     /**
      * Дата и время начала тендера (в формате строки).
      */
-    @NotNull(message = "startDate may not be null or have non-String format")
+//    @NotNull(message = "startDate may not be null or have non-String format")
     @DateTimeFormat(pattern = DATE_TIME_PATTERN)
     private String startDate;
 
