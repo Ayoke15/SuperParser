@@ -1,6 +1,6 @@
 package com.example.st.add.repository;
 
-import com.example.st.add.model.Xpath;
+import org.example.st.model.Xpath;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

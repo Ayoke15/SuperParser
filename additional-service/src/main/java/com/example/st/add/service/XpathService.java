@@ -1,9 +1,8 @@
 package com.example.st.add.service;
 
 
-import com.example.st.add.model.Xpath;
+import org.example.st.model.Xpath;
 import com.example.st.add.repository.XpathRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

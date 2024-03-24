@@ -1,6 +1,6 @@
 package com.example.st.add.service;
 
-import com.example.st.add.model.ActiveAction;
+import org.example.st.model.ActiveAction;
 import com.example.st.add.repository.ActiveActionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

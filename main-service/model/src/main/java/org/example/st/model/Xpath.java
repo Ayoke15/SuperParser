@@ -1,11 +1,9 @@
-package com.example.st.add.model;
+package org.example.st.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -59,21 +57,20 @@ public class Xpath {
      */
     @Column
     @NotNull
-    private String start_date;
+    private String startDate;
 
     /**
      * Дата окончания тендера.
      */
     @Column
     @NotNull
-    private String end_date;
+    private String endDate;
 
     /**
      * Дата публикации тендера.
      */
     @Column
-    @NotNull
-    private String publish_date;
+    private String publishDate;
 
     /**
      * Название компании, проводящей тендер.
