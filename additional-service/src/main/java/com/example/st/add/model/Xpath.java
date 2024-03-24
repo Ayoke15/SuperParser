@@ -6,6 +6,7 @@ import lombok.*;
 import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Класс, представляющий сущность XPath.
@@ -128,4 +129,11 @@ public class Xpath {
      */
     @Column
     private String login_button;
+
+    @OneToMany
+    @NotNull
+    private List<ActiveAction> activeActions;
+
+
+
 }
