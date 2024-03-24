@@ -58,21 +58,21 @@ public class Xpath {
      */
     @Column
     @NotNull
-    private LocalDateTime start_date;
+    private String start_date;
 
     /**
      * Дата окончания тендера.
      */
     @Column
     @NotNull
-    private LocalDateTime end_date;
+    private String end_date;
 
     /**
      * Дата публикации тендера.
      */
     @Column
     @NotNull
-    private LocalDateTime publish_date;
+    private String publish_date;
 
     /**
      * Название компании, проводящей тендер.
