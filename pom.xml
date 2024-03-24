@@ -18,6 +18,7 @@
 <!--        <module>main-service/dto</module>-->
 <!--        <module>main-service/server</module>-->
         <module>additional-service</module>
+        <module>recomendation-service</module>
     </modules>
 
 
