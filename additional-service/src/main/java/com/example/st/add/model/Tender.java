@@ -50,7 +50,6 @@ public class Tender {
      * Дата начала тендера.
      */
     @Column
-    @NotNull
     private LocalDateTime start_date;
 
     /**
