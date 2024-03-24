@@ -14,6 +14,9 @@
     <name>Startup Tender</name>
     <modules>
         <module>main-service</module>
+<!--        <module>main-service/client</module>-->
+<!--        <module>main-service/dto</module>-->
+<!--        <module>main-service/server</module>-->
         <module>additional-service</module>
     </modules>
 
