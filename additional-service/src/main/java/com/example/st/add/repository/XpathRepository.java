@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface XpathRepository extends JpaRepository<Xpath, Long> {
+    Xpath findByLinkSite(String linkSite);
 }
