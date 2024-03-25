@@ -2,7 +2,6 @@ package com.example.st.add.service;
 
 
 import com.example.st.add.repository.StatusRepository;
-import com.example.st.add.repository.TenderRepository;
 import com.example.st.add.repository.XpathRepository;
 import lombok.AllArgsConstructor;
 import org.example.st.client.TenderCreationClient;
@@ -26,9 +25,8 @@ import java.util.List;
 public class ParserService {
     private final WebDriver webDriver;
     private final StatusRepository statusRepository;
-    private final TenderRepository tenderRepository;
     private final XpathRepository xpathRepository;
-    private final TenderCreationClient tenderCreationClient;
+    private final TenderCreationClient client;
 
 
     public List<Tender> parseWebsite() {
@@ -41,7 +39,8 @@ public class ParserService {
 //                isLastPage = true;
 //            }
 //        }
-        return tenderRepository.findAll();
+//        return tenderRepository.findAll();
+        return null;
     }
 
     public ResponseEntity<Void> parsePage() {
@@ -74,12 +73,12 @@ public class ParserService {
                         .endDate(endDates.get(i))
                         .publishDate(publishDates.get(i))
                         .company(companies.get(i))
-                        .link(links.get(i))
+                        .link("test")
                         .build();
                 tenders.add(tenderDto);
             }
         }
-        return tenderCreationClient.postTendersList(tenders);
+        return client.postTendersList(tenders);
     }
 
     private List<String> extractText(String xpath) {
@@ -93,7 +92,7 @@ public class ParserService {
 
     private List<String> formatDates(List<String> dates) {
         List<String> formattedDates = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         for (String date : dates) {
             if (!date.isEmpty()) {
                 LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
