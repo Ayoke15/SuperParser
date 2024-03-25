@@ -1,26 +1,26 @@
 import {FC} from 'react';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import NotFoundPage from "@pages/not-found";
-import {NamePages, Page, routes} from "@pages/router";
+import {createBrowserRouter, RouterProvider as Provider} from "react-router-dom";
 
-const RouterProvider: FC = () => {
-    const pages: Page[] = Object.keys(NamePages)
-        .filter(key => !isNaN(Number(key)))
-        .map(key => routes[Number(key) as NamePages])
-    return (
-        <BrowserRouter>
-            <Routes>
-                {pages.map(page => (
-                    <Route
-                        key={page.path}
-                        path={page.path}
-                        element={page.component}
-                    />
-                ))}
-                <Route path={"*"} element={<NotFoundPage/>}/>
-            </Routes>
-        </BrowserRouter>
-    );
+import RootLayout from "@app/layouts/root";
+import {routes} from "@pages/router";
+import BasicErrorPage from "@pages/error/basic";
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <RootLayout/>,
+        children: [
+            {
+                errorElement: <BasicErrorPage/>,
+                children: routes
+            }
+        ],
+        errorElement: <BasicErrorPage/>,
+    },
+]);
+
+const RouterProviders: FC = () => {
+    return (<Provider router={router}/>);
 };
 
-export default RouterProvider;
+export default RouterProviders;
