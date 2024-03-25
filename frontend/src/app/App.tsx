@@ -1,13 +1,8 @@
+import {FC} from 'react';
 import Providers from "@app/providers";
-import HeaderUI from "@shared/ui/header";
 
-function App() {
-    return (
-        <>
-            <HeaderUI/>
-            <Providers/>
-        </>
-    )
-}
+const App: FC = () => {
+    return (<Providers/>);
+};
 
-export default App
+export default App;
