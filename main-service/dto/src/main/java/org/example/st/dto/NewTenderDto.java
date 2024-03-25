@@ -20,7 +20,7 @@ public class NewTenderDto {
     /**
      * Формат даты и времени для отображения.
      */
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TIME_PATTERN = "dd.MM.yyyy HH:mm";
 
     /**
      * Валюта тендера.

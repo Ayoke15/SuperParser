@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class NewTenderMapper {
 
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TIME_PATTERN = "dd.MM.yyyy HH:mm";
 
     /**
      * Преобразует объект TenderDto в объект Tender.
@@ -24,7 +24,7 @@ public class NewTenderMapper {
             .currency(tenderDto.getCurrency())
             .status(tenderDto.getStatus())
             .name(tenderDto.getName())
-            .startDate(LocalDateTime.parse(tenderDto.getStartDate(), DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)))
+            .startDate(!tenderDto.getStartDate().isEmpty() ? LocalDateTime.parse(tenderDto.getStartDate(), DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)) : null)
             .endDate(LocalDateTime.parse(tenderDto.getEndDate(), DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)))
             .publishDate(LocalDateTime.parse(tenderDto.getPublishDate(), DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)))
             .company(tenderDto.getCompany())
