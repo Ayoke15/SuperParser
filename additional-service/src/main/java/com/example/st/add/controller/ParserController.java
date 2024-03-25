@@ -17,7 +17,7 @@ public class ParserController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<Void> parsePage() {
-        return parserService.parsePage();
+    public ResponseEntity<Void> parsePage(){
+        return parserService.parseAllWebsites();
     }
 }

@@ -4,17 +4,20 @@ package com.example.st.add.service;
 import com.example.st.add.repository.StatusRepository;
 import com.example.st.add.repository.XpathRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.st.client.TenderCreationClient;
 import org.example.st.dto.NewTenderDto;
 import org.example.st.model.Currency;
 import org.example.st.model.Tender;
 import org.example.st.model.Xpath;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ParserService {
     private final WebDriver webDriver;
     private final StatusRepository statusRepository;
@@ -29,56 +33,76 @@ public class ParserService {
     private final TenderCreationClient client;
 
 
-    public List<Tender> parseWebsite() {
-//        boolean isLastPage = false;
-//        while (!isLastPage) {
-//            parsePage();
-//            if (nextPageButton.isDisplayed()) {
-//                nextPageButton.click();
-//            } else {
-//                isLastPage = true;
-//            }
-//        }
-//        return tenderRepository.findAll();
-        return null;
-    }
-
-    public ResponseEntity<Void> parsePage() {
-        List<NewTenderDto> tenders = new ArrayList<>();
+    //TODO Поменять на Thread pool
+    public ResponseEntity<Void> parseAllWebsites() {
         List<Xpath> xpathList = xpathRepository.findAll();
 
-        //TODO Поменять на Thread pool
+        List<NewTenderDto> newTenderDtoList = new ArrayList<>();
         for (Xpath xpath : xpathList) {
-            webDriver.get(xpath.getLink_site());
+            newTenderDtoList.addAll(parseWebsite(xpath.getLinkSite()));
+        }
+        for (NewTenderDto newTenderDto : newTenderDtoList) {
+            System.out.println(newTenderDto);
+        }
+        return client.postTendersList(newTenderDtoList);
+    }
 
-            WebElement tendersSwitch = webDriver.findElement(By.xpath("//*[@id=\"P562_BARGAINING_TYPE\"]/option[5]"));
-            tendersSwitch.click();
+    public List<NewTenderDto> parseWebsite(String websiteLink) {
+        webDriver.get(websiteLink);
 
-            List<String> codes = extractText(xpath.getCode());
-            List<String> statuses = extractText(xpath.getStatus());
-            List<String> names = extractText(xpath.getName());
-            List<String> startDates = formatDates(extractText(xpath.getStartDate()));
-            List<String> endDates = formatDates(extractText(xpath.getEndDate()));
-            List<String> publishDates = formatDates(extractText(xpath.getPublishDate()));
-            List<String> companies = extractText(xpath.getCompany());
-            List<String> links = extractText(xpath.getLink());
+        Xpath xpath = xpathRepository.findByLinkSite(websiteLink);
 
-            for (int i = 0; i < codes.size(); i++) {
-                NewTenderDto tenderDto = NewTenderDto.builder()
-                        .code(codes.get(i))
-                        .currency(Currency.RUB)
-                        .status(statusRepository.findByName(statuses.get(i)))
-                        .name(names.get(i))
-                        .startDate(startDates.get(i))
-                        .endDate(endDates.get(i))
-                        .publishDate(publishDates.get(i))
-                        .company(companies.get(i))
-                        .link("test")
-                        .build();
-                tenders.add(tenderDto);
+        WebElement tendersSwitchButton = webDriver.findElement(By.xpath(xpath.getSwitchButton()));
+        tendersSwitchButton.click();
+
+        List<NewTenderDto> tendersFromWebsite = new ArrayList<>();
+        boolean isLastPage = false;
+
+        while (!isLastPage) {
+            tendersFromWebsite.addAll(parsePage(xpath));
+            try {
+                WebElement nextPageButton = webDriver.findElement(By.xpath(xpath.getNextButton()));
+                log.error("log1: {}", nextPageButton.getTagName());
+                nextPageButton.click();
+            } catch (NoSuchElementException e) {
+                isLastPage = true;
             }
         }
-        return client.postTendersList(tenders);
+        return tendersFromWebsite;
+    }
+
+    public List<NewTenderDto> parsePage(Xpath xpath) {
+
+        List<NewTenderDto> tendersFromPage = new ArrayList<>();
+
+        List<String> startDates = extractText(xpath.getStartDate());
+        List<String> endDates = extractText(xpath.getEndDate());
+        List<String> publishDates = extractText(xpath.getPublishDate());
+
+        List<String> codes = extractText(xpath.getCode());
+        List<String> statuses = extractText(xpath.getStatus());
+        List<String> names = extractText(xpath.getName());
+        startDates = formatDates(startDates);
+        endDates = formatDates(endDates);
+        publishDates = formatDates(publishDates);
+        List<String> companies = extractText(xpath.getCompany());
+//        List<String> links = extractText(xpath.getLink());
+
+        for (int i = 0; i < codes.size(); i++) {
+            NewTenderDto tenderDto = NewTenderDto.builder()
+                    .code(codes.get(i))
+                    .currency(Currency.RUB)
+                    .status(statusRepository.findByName(statuses.get(i)))
+                    .name(names.get(i))
+                    .startDate(startDates.get(i))
+                    .endDate(endDates.get(i))
+                    .publishDate(publishDates.get(i))
+                    .company(companies.get(i))
+                    .link("test")
+                    .build();
+            tendersFromPage.add(tenderDto);
+        }
+        return tendersFromPage;
     }
 
     private List<String> extractText(String xpath) {
@@ -104,5 +128,4 @@ public class ParserService {
         }
         return formattedDates;
     }
-
 }
