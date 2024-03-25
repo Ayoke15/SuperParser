@@ -10,7 +10,7 @@ create table if not exists tender
     currency     varchar(255) check (currency in ('RUB', 'BYN')) not null,
     status_id    bigint not null,
     name         varchar(2000) not null,
-    start_date   timestamp not null,
+    start_date   timestamp,
     end_date     timestamp not null,
     publish_date timestamp not null,
     company      varchar(255) not null,
