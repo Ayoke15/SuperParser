@@ -16,8 +16,8 @@ import java.util.List;
  */
 @Service
 public class TenderCreationClient {
-    private static final String API_PREFIX = "/";
-    private static final String SERVER_URL = "server.url=http://localhost:8080";
+    private static final String API_PREFIX = "/api";
+    private static final String SERVER_URL = "http://localhost:8080";
     private final RestTemplate restTemplate;
 
     /**
@@ -40,6 +40,6 @@ public class TenderCreationClient {
      * @return Ответ от сервера
      */
     public ResponseEntity<Void> postTendersList(List<NewTenderDto> tenderDtoList) {
-        return restTemplate.postForEntity("create-tenders", tenderDtoList, Void.class);
+        return restTemplate.postForEntity("/create-tenders", tenderDtoList, Void.class);
     }
 }
