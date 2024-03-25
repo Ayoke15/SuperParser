@@ -27,9 +27,9 @@ public class Xpath {
     /**
      * Ссылка на сайт.
      */
-    @Column
+    @Column(name = "link_site")
     @NotNull
-    private String link_site;
+    private String linkSite;
 
     /**
      * Валюта тендера.
@@ -55,14 +55,14 @@ public class Xpath {
     /**
      * Дата начала тендера.
      */
-    @Column
+    @Column(name = "start_date")
     @NotNull
     private String startDate;
 
     /**
      * Дата окончания тендера.
      */
-    @Column
+    @Column(name = "end_date")
     @NotNull
     private String endDate;
 
@@ -88,8 +88,8 @@ public class Xpath {
     /**
      * Начальная цена тендера.
      */
-    @Column
-    private String start_price;
+    @Column(name = "start_price")
+    private String startPrice;
 
     /**
      * Код тендера.
@@ -100,8 +100,8 @@ public class Xpath {
     /**
      * Кнопка перехода на следующую страницу таблицы.
      */
-    @Column
-    private String next_button;
+    @Column(name = "next_button")
+    private String nextButton;
 
     /**
      * Имя пользователя для авторизации.
@@ -118,19 +118,19 @@ public class Xpath {
     /**
      * Ссылка для авторизации.
      */
-    @Column
-    private String login_link;
+    @Column(name = "login_link")
+    private String loginLink;
 
     /**
      * Кнопка для авторизации.
      */
-    @Column
-    private String login_button;
+    @Column(name = "login_button")
+    private String loginButton;
+
+    @Column(name = "switch_button")
+    private String switchButton;
 
     @OneToMany
     @NotNull
     private List<ActiveAction> activeActions;
-
-
-
 }
