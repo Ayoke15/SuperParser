@@ -3,6 +3,7 @@ package org.example.st.recomendation.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import org.example.st.model.Tender;
 import org.example.st.recomendation.model.EventDTO;
 import org.example.st.recomendation.model.FilterData;
 import org.example.st.recomendation.unit.JsonFileUtil;
