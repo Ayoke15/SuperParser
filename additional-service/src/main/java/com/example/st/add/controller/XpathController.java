@@ -19,12 +19,12 @@ public class XpathController {
         return xpathService.findAllXpath();
     }
 
-    @GetMapping("/id")
-    public Xpath getByParam(@RequestParam(required = false) Long id) {
+    @GetMapping("/get-by-id")
+    public Xpath getById(@RequestParam Long id) {
         return xpathService.findXpathById(id);
     }
 
-    @GetMapping("/link")
+    @GetMapping("/get-by-link")
     public Xpath getByWebsite(@RequestParam String link) {
         return xpathService.findByWebsiteLink(link);
     }
