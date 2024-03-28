@@ -8,19 +8,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.st.client.TenderCreationClient;
 import org.example.st.dto.NewTenderDto;
+import org.example.st.model.ActiveAction;
 import org.example.st.model.Currency;
+import org.example.st.model.Status;
 import org.example.st.model.Xpath;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +35,6 @@ public class ParserServiceImpl implements ParserService {
     private final StatusRepository statusRepository;
     private final XpathRepository xpathRepository;
     private final TenderCreationClient client;
-//    private WebElement copyButton;
 
 
     //TODO Поменять на Thread pool
@@ -43,6 +47,8 @@ public class ParserServiceImpl implements ParserService {
     @Override
     public ResponseEntity<Void> parseAllWebsites() {
         List<Xpath> xpathList = xpathRepository.findAll();
+
+        xpathList.sort(Comparator.comparingLong(Xpath::getId));
 
         List<NewTenderDto> newTenderDtoList = new ArrayList<>();
         for (Xpath xpath : xpathList) {
@@ -63,12 +69,19 @@ public class ParserServiceImpl implements ParserService {
     @Override
     public List<NewTenderDto> parseWebsite(String websiteLink) {
         webDriver.get(websiteLink);
-
+        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
         Xpath xpath = xpathRepository.findByLinkSite(websiteLink);
 
-        WebElement tendersSwitchButton = webDriver.findElement(By.xpath(xpath.getSwitchButton()));
-        tendersSwitchButton.click();
+        List<ActiveAction> actions = xpath.getActiveActions();
+        actions.sort(Comparator.comparingInt(ActiveAction::getNumber));
+
+        for (ActiveAction action : actions) {
+            WebElement actionElement = webDriver.findElement(By.xpath(action.getXpath_path()));
+            Wait<WebDriver> wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+            wait.until(d -> actionElement.isDisplayed());
+            actionElement.click();
+        }
 
         List<NewTenderDto> tendersFromWebsite = new ArrayList<>();
         boolean isLastPage = false;
@@ -113,22 +126,50 @@ public class ParserServiceImpl implements ParserService {
         endDates = formatDates(endDates);
         publishDates = formatDates(publishDates);
 
-        for (int i = 0; i < codes.size(); i++) {
-            NewTenderDto tenderDto = NewTenderDto.builder()
-                    .code(codes.get(i))
-                    .currency(Currency.RUB)
-                    .status(statusRepository.findByName(statuses.get(i)))
-                    .name(names.get(i))
-                    .startPrice(startPrices.get(i))
-                    .startDate(startDates.get(i))
-                    .endDate(endDates.get(i))
-                    .publishDate(publishDates.get(i))
-                    .company(companies.get(i))
-                    .link(links.get(i))
-                    .build();
-            tendersFromPage.add(tenderDto);
+        if (parseStatuses(statuses)) {
+            for (int i = 0; i < codes.size(); i++) {
+                NewTenderDto tenderDto = NewTenderDto.builder()
+                        .code(codes.get(i))
+                        .currency(Currency.RUB)
+                        .status(statusRepository.findByName(statuses.get(i)))
+                        .name(names.get(i))
+                        .startPrice(startPrices.get(i))
+                        .startDate(startDates.get(i))
+                        .endDate(endDates.get(i))
+                        .publishDate(publishDates.get(i))
+                        .company(companies.get(i))
+                        .link(links.get(i))
+                        .build();
+                tendersFromPage.add(tenderDto);
+            }
         }
         return tendersFromPage;
+    }
+
+    /**
+     * Парсит список статусов и сохраняет те статусы, которые отсутствуют в репозитории.
+     * Если статус уже существует в репозитории, он не будет повторно сохранен.
+     *
+     * @param statuses список статусов для парсинга и сохранения
+     * @return true, если парсинг и сохранение статусов прошли успешно, в противном случае - false
+     */
+    public boolean parseStatuses(List<String> statuses) {
+        Set<String> statusSet = new HashSet<>(statuses);
+        Set<String> existingStatusNames = statusRepository.findAll().stream()
+                .map(Status::getName)
+                .collect(Collectors.toSet());
+
+        statusSet.removeAll(existingStatusNames);
+
+        if (!statusSet.isEmpty()) {
+            List<Status> newStatuses = statusSet.stream()
+                    .map(name -> Status.builder()
+                            .name(name)
+                            .build())
+                    .toList();
+            statusRepository.saveAll(newStatuses);
+        }
+        return true;
     }
 
     /**
