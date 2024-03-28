@@ -9,6 +9,8 @@ import java.util.List;
 /**
  * Класс, представляющий сущность XPath.
  */
+
+//TODO НУЖНО ЧТО-ТО РЕШИТЬ С NOT NULL ПОЛЯМИ
 @Entity
 @Getter
 @Setter
@@ -76,7 +78,7 @@ public class Xpath {
      * Название компании, проводящей тендер.
      */
     @Column
-    @NotNull
+//    @NotNull
     private String company;
 
     /**
@@ -127,10 +129,10 @@ public class Xpath {
     @Column(name = "login_button")
     private String loginButton;
 
-    @Column(name = "switch_button")
-    private String switchButton;
+//    @Column(name = "switch_button")
+//    private String switchButton;
 
     @OneToMany
-    @NotNull
+//    @NotNull
     private List<ActiveAction> activeActions;
 }
