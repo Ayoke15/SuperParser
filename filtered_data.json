@@ -1,0 +1,20 @@
+{
+  "startDate": {
+    "success_count": 94,
+    "total_count": 187,
+    "alpha": 95,
+    "beta": 94
+  },
+  "endDate": {
+    "success_count": 60,
+    "total_count": 172,
+    "alpha": 61,
+    "beta": 113
+  },
+  "region": {
+    "success_count": 93,
+    "total_count": 164,
+    "alpha": 94,
+    "beta": 72
+  }
+}
