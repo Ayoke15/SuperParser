@@ -7,4 +7,6 @@ import java.util.List;
 public interface XpathService {
     Xpath saveXpath(Xpath xpath);
     List<Xpath> findAllXpath();
+    Xpath findXpathById(Long id);
+    Xpath findByWebsiteLink(String link);
 }
