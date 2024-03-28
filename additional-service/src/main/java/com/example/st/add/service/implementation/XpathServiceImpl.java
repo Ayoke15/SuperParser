@@ -8,6 +8,7 @@ import com.example.st.add.repository.XpathRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -18,6 +19,16 @@ public class XpathServiceImpl implements XpathService {
     @Override
     public Xpath saveXpath(Xpath xpath) {
         return xpathRepository.save(xpath);
+    }
+
+    @Override
+    public Xpath findXpathById(Long id) {
+        return xpathRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Xpath findByWebsiteLink(String link) {
+        return xpathRepository.findByLinkSite(link);
     }
 
     @Override
