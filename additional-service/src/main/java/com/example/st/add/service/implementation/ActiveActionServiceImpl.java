@@ -6,6 +6,8 @@ import org.example.st.model.ActiveAction;
 import com.example.st.add.repository.ActiveActionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @AllArgsConstructor
 public class ActiveActionServiceImpl implements ActiveActionService {
@@ -16,4 +18,8 @@ public class ActiveActionServiceImpl implements ActiveActionService {
         return activeActionRepository.save(activeAction);
     }
 
+    @Override
+    public ActiveAction findActionById(Long id) {
+        return activeActionRepository.findById(id).orElse(null);
+    }
 }
