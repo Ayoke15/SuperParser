@@ -33,7 +33,7 @@ public class TenderServiceImpl implements TenderService {
      */
     @Override
     public List<TenderDto> getAllTenders(Pageable page) {
-        List<TenderDto> tenderDtos = tenderJpaRepository.findAll().stream().map(TenderMapper::toTenderDto).toList();
+        List<TenderDto> tenderDtos = tenderJpaRepository.findAll(page).stream().map(TenderMapper::toTenderDto).toList();
         log.info("get-all-tenders request completed for tenderList:{}", tenderDtos);
         return tenderDtos;
     }
