@@ -34,4 +34,11 @@ public class XpathController {
         return xpathService.saveXpath(xpath);
     }
 
+    @PatchMapping("/edit")
+    public Xpath editXpath(@RequestParam Long id,
+                           @RequestBody Xpath xpath) {
+        xpath.setId(id);
+        return xpathService.saveXpath(xpath);
+    }
+
 }
