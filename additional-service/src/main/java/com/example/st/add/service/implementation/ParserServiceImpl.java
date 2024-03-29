@@ -27,6 +27,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * Реализация сервиса для выполнения парсинга веб-сайтов.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
