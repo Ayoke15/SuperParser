@@ -1,10 +1,13 @@
 import {FC} from 'react';
 import RouterProvider from "@app/providers/router-provider";
+import QueryClientProvider from "@app/providers/query-client-provider";
 
 const Providers: FC = () => {
     return (
         <>
-            <RouterProvider/>
+            <QueryClientProvider>
+                <RouterProvider/>
+            </QueryClientProvider>
         </>
     );
 };
