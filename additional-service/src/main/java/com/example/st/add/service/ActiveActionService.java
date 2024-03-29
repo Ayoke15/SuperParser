@@ -1,20 +1,10 @@
 package com.example.st.add.service;
 
 import org.example.st.model.ActiveAction;
-import com.example.st.add.repository.ActiveActionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ActiveActionService {
-    private final ActiveActionRepository activeActionRepository;
+import java.util.List;
 
-    @Autowired
-    public ActiveActionService(ActiveActionRepository activeActionRepository) {
-        this.activeActionRepository = activeActionRepository;
-    }
-
-    public ActiveAction saveAction(ActiveAction activeAction) {
-        return activeActionRepository.save(activeAction);
-    }
+public interface ActiveActionService {
+    ActiveAction saveAction(ActiveAction activeAction);
+    ActiveAction findActionById(Long id);
 }
