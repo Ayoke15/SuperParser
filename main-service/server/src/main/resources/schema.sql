@@ -56,7 +56,7 @@ create table if not exists xpath_active_actions (
 
 
 
-INSERT INTO xpath (id,code, company, currency, end_date, link, link_site, login_button, login_link, name,
+INSERT INTO xpath (id, code, company, currency, end_date, link, link_site, login_button, login_link, name,
                           next_button, password, publish_date, start_date, start_price, status, username)
 VALUES (1, '//*[@id="25399118176800742"]/tbody/tr[*]/td[2]', '//*[@id="25399118176800742"]/tbody/tr[*]/td[5]',
         '//*[@id="25399118176800742"]/tbody/tr[*]/td[7]', '//*[@id="25399118176800742"]/tbody/tr[*]/td[10]',
