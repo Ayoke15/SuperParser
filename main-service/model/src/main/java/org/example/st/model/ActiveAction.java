@@ -24,7 +24,8 @@ public class ActiveAction {
      * Название статуса.
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    @NotNull
+//    @NotNull
+    @Transient
     private Xpath xpath;
 
     @Column
