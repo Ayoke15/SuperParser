@@ -17,8 +17,9 @@ public class TenderRankingService {
         Map<Long, Double> tenderWeights = new HashMap<>();
 
         for (ShortTenderDTO tender : tenders) {
-            if (!tender.getProduct().equals(currentFilter.getProduct())) {
-                continue; // Если продукт не соответствует фильтру, пропускаем тендер
+            // Проверяем, содержится ли продукт из фильтра в списке продуктов тендера
+            if (!tender.getProducts().contains(currentFilter.getProduct())) {
+                continue; // Пропускаем тендер, если его продукты не содержат продукт из фильтра
             }
 
             double weight = 0.0;
