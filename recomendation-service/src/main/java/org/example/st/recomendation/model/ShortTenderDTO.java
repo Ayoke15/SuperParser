@@ -1,15 +1,16 @@
 package org.example.st.recomendation.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
-    public class ShortTenderDTO {
+public class ShortTenderDTO {
         private Long id;
         private LocalDate startDate;
         private LocalDate endDate;
         private String region;
         private String name;
-        private String product;
+        private List<String> products;
 
     // Геттеры
     public Long getId() {
@@ -32,9 +33,14 @@ import java.time.LocalDate;
         return name;
     }
 
-    public String getProduct() {
-        return product;
+    public List<String> getProducts() {
+        return products;
     }
+
+    public void setProducts(List<String> products) {
+        this.products = products;
+    }
+
 
     // Сеттеры
     public void setId(Long id) {
@@ -57,7 +63,4 @@ import java.time.LocalDate;
         this.name = name;
     }
 
-    public void setProduct(String product) {
-        this.product = product;
-    }
 }
