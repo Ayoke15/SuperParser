@@ -54,24 +54,19 @@ public class ParserServiceImpl implements ParserService {
 
         xpathList.sort(Comparator.comparingLong(Xpath::getId));
 
-        List<NewTenderDto> newTenderDtoList = new ArrayList<>();
-        for (Xpath xpath : xpathList) {
-            newTenderDtoList.addAll(parseWebsite(xpath.getLinkSite()));
+        for (Xpath xpath : xpathList){
+            parseWebsite(xpath.getLinkSite());
         }
-        for (NewTenderDto newTenderDto : newTenderDtoList) {
-            System.out.println(newTenderDto);
-        }
-        return client.postTendersList(newTenderDtoList);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Выполняет парсинг определенного веб-сайта
      *
      * @param websiteLink строка, содержащая ссылку на веб-сайт
-     * @return Список всех тендеров на сайте
      */
     @Override
-    public List<NewTenderDto> parseWebsite(String websiteLink) {
+    public void parseWebsite(String websiteLink) {
         webDriver.get(websiteLink);
         webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
@@ -87,11 +82,10 @@ public class ParserServiceImpl implements ParserService {
             actionElement.click();
         }
 
-        List<NewTenderDto> tendersFromWebsite = new ArrayList<>();
         boolean isLastPage = false;
 
         while (!isLastPage) {
-            tendersFromWebsite.addAll(parsePage(xpath));
+            parsePage(xpath);
             try {
                 WebElement nextPageButton = webDriver.findElement(By.xpath(xpath.getNextButton()));
                 log.error("log1: {}", nextPageButton.getTagName());
@@ -103,17 +97,16 @@ public class ParserServiceImpl implements ParserService {
                 e.printStackTrace();
             }
         }
-        return tendersFromWebsite;
+        ResponseEntity.ok().build();
     }
 
     /**
      * Выполняет парсинг одной страницы веб-сайта.
      *
      * @param xpath объект Xpath, содержащий информацию о элементах на странице, которые необходимо спарсить
-     * @return Список всех тендеров на странице
      */
     @Override
-    public List<NewTenderDto> parsePage(Xpath xpath) {
+    public void parsePage(Xpath xpath) {
         List<NewTenderDto> tendersFromPage = new ArrayList<>();
 
         List<String> codes = extractText(xpath.getCode());
@@ -147,7 +140,7 @@ public class ParserServiceImpl implements ParserService {
                 tendersFromPage.add(tenderDto);
             }
         }
-        return tendersFromPage;
+        client.postTendersList(tendersFromPage);
     }
 
     /**
