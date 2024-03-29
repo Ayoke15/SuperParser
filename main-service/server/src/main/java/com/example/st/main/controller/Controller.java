@@ -1,5 +1,6 @@
 package com.example.st.main.controller;
 
+import com.example.st.main.repository.TenderJpaRepository;
 import org.example.st.dto.TenderDto;
 import com.example.st.main.service.TenderService;
 import jakarta.validation.constraints.Positive;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.st.dto.NewTenderDto;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +28,7 @@ import java.util.List;
 public class Controller {
 
     private TenderService tenderService;
+    private TenderJpaRepository repository;
 
     /**
      * Обрабатывает GET-запрос для получения списка всех тендеров.
@@ -36,12 +39,22 @@ public class Controller {
      */
     @GetMapping("/get-all-tenders")
     ResponseEntity<List<TenderDto>> getAllTenders(
-        @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
-        @RequestParam(required = false, defaultValue = "20") @Positive Integer size
+            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(required = false, defaultValue = "20") @Positive Integer size
     ) {
         log.info("get-all-tenders request accepted from={}, size={}", from, size);
         PageRequest page = PageRequest.of(from / size, size);
-        return new ResponseEntity<>(tenderService.getAllTenders(page), HttpStatus.OK);
+        List<TenderDto> tenderDtos = tenderService.getAllTenders(page);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set(
+                HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
+                "TotalPagesCount"
+        );
+        responseHeaders.set(
+                "TotalPagesCount",
+                String.valueOf(Math.ceil((double) repository.findAll().size() / (double) size))
+        );
+        return ResponseEntity.ok().headers(responseHeaders).body(tenderDtos);
     }
 
     /**
@@ -52,7 +65,7 @@ public class Controller {
      */
     @PostMapping("/create-tender")
     ResponseEntity<Void> postTender(
-        @RequestBody @Validated org.example.st.dto.NewTenderDto newTenderDto
+            @RequestBody @Validated org.example.st.dto.NewTenderDto newTenderDto
     ) {
         log.info("create-tender request accepted, newTenderDto{}", newTenderDto);
         tenderService.postTender(newTenderDto);
@@ -67,7 +80,7 @@ public class Controller {
      */
     @PostMapping("/create-tenders")
     ResponseEntity<Void> postTenderList(
-        @RequestBody @Validated List<NewTenderDto> newTenderDtos
+            @RequestBody @Validated List<NewTenderDto> newTenderDtos
     ) {
         log.info("create-tenders request accepted, newTenderDtos size {}", newTenderDtos.size());
         tenderService.postTenderList(newTenderDtos);
