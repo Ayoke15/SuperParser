@@ -1,5 +1,6 @@
 import {FC} from 'react';
 import {AspectRatio, Sheet, Stack, Typography} from "@mui/joy";
+import {NavLink} from "react-router-dom";
 
 
 const HeaderUI: FC = () => {
@@ -17,13 +18,14 @@ const HeaderUI: FC = () => {
                         noWrap
                         level="h2"
                     >
-                        Tender
+                        <NavLink to={"/"}>Tender</NavLink>
                     </Typography>
                     <Typography
                         noWrap
                     >
                         Find your best tender
                     </Typography>
+                    <NavLink to={"/config"}>config</NavLink>
                 </Stack>
                 <AspectRatio
                     minHeight={120}

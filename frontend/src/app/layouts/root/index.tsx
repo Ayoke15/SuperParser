@@ -8,7 +8,7 @@ const RootLayout: FC = () => {
     return (
         <>
             <HeaderUI/>
-            <Box>
+            <Box sx={{p: 2}}>
                 <Outlet/>
             </Box>
         </>

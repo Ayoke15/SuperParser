@@ -7,12 +7,7 @@ import {NavLink, useLocation} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
 
-const LOCAL_API_URL = "http://localhost:8080/api/get-all-tenders?"
-const GLOBAL_API_URL = "http://95.31.11.209:8080/api/get-all-tenders?"
-
-
-const LOCAL_IP = "95.31.11.209"
-
+const API_URL = "http://localhost:8080/api/get-all-tenders?"
 
 interface Tender {
     code: string,
@@ -115,14 +110,8 @@ interface FetchTendersData {
 
 
 const fetchTenders = async (from: number, size: number): Promise<FetchTendersData> => {
-    const responseIp = await axios.get("https://api.ipify.org?format=json")
-    let api = GLOBAL_API_URL
-    if (responseIp.data.ip == LOCAL_IP) {
-        api = LOCAL_API_URL
-    }
-
     const responseTenders = await axios.get<Tender[]>(
-        `${api}from=${from}&size=${size}`,
+        `${API_URL}from=${from}&size=${size}`,
         {
             headers: {
                 Accept: "*/*"
@@ -199,7 +188,7 @@ const HomePage: FC = () => {
                         )}
                     />
                 </Stack>
-                
+
                 {isFetching ? (
                     <Stack
                         direction="column"
