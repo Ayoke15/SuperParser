@@ -55,15 +55,15 @@ public class RecondationController {
         this.currentFilter = filter; // Сохраняем фильтр в переменную
         return ResponseEntity.ok().build(); // Отправляем подтверждение об успешном сохранении
     }
-    @PostMapping("/submit")
-    public ResponseEntity<List<Long>> submitTenders(@RequestBody List<ShortTenderDTO> tenderList) {
-        this.tenders.clear();
-        this.tenders.addAll(tenderList);
-        this.weights = filterService.calculateWeights();
-        List<Long> rankedTenderIds = tenderRankingService.rankTenders(this.tenders, this.currentFilter, this.weights);
+        @PostMapping("/submit")
+        public ResponseEntity<List<Long>> submitTenders(@RequestBody List<ShortTenderDTO> tenderList) {
+            this.tenders.clear();
+            this.tenders.addAll(tenderList);
+            this.weights = filterService.calculateWeights();
+            List<Long> rankedTenderIds = tenderRankingService.rankTenders(this.tenders, this.currentFilter, this.weights);
 
-        return ResponseEntity.ok(rankedTenderIds);
-    }
+            return ResponseEntity.ok(rankedTenderIds);
+        }
 
 }
 
