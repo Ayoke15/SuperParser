@@ -1,11 +1,11 @@
 import {FC} from 'react';
-import {Form, redirect, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import axios from "axios";
 import {Xpath} from "@pages/config";
 import {useQuery} from "@tanstack/react-query";
-import {Button, Card, FormControl, FormLabel, Input, Stack} from "@mui/joy";
+import {Button, Card, FormControl, FormLabel, Input} from "@mui/joy";
 
-const API_URL = "http://localhost:8888"
+const API_URL = "http://95.31.11.209:8888"
 
 interface EditXpathCard {
     xpath: Xpath
@@ -30,7 +30,7 @@ const EditXpathCard: FC<EditXpathCard> = ({xpath}) => {
                     ))}
                     <Button type="submit">Сохранить</Button>
                 </FormControl>
-            </Form>
+            </form>
         </Card>
     );
 };

@@ -4,7 +4,7 @@ import {Card, CardContent, Stack, Typography} from "@mui/joy";
 import {FC} from "react";
 import {Link} from "react-router-dom";
 
-const API_URL = "http://localhost:8888"
+const API_URL = "http://95.31.11.209:8888"
 
 export interface ActiveAction {
     id: number,

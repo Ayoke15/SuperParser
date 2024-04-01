@@ -1,13 +1,13 @@
 import axios from "axios";
 
 import {FC, useState} from 'react';
-import {Card, CardContent, FormControl, FormLabel, Input, Skeleton, Stack, Typography} from "@mui/joy";
+import {Button, Card, CardContent, FormControl, FormLabel, Input, Skeleton, Stack, Typography} from "@mui/joy";
 import {Pagination, PaginationItem} from "@mui/material";
 import {NavLink, useLocation} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 
 
-const API_URL = "http://localhost:8080/api/get-all-tenders?"
+const API_URL = "http://95.31.11.209:8080/api/get-all-tenders?"
 
 interface Tender {
     code: string,
@@ -103,6 +103,22 @@ const TenderCardLoader: FC = () => {
 };
 
 
+const ButtonLoading: FC = () => {
+    const [loading, setLoading] = useState(false);
+
+    const click = () => {
+        setLoading(true);
+        setTimeout(() => setLoading(false), 15000)
+    }
+
+    return (
+        <Button onClick={click} loading={loading}>
+            Начать парсинг
+        </Button>
+    );
+};
+
+
 interface FetchTendersData {
     tenders: Tender[],
     totalPagesCount: number
@@ -159,6 +175,7 @@ const HomePage: FC = () => {
                     alignItems="self-end"
                     spacing={2}
                 >
+                    <ButtonLoading/>
                     <FormControl>
                         <FormLabel>Кол-во тендеров на странице</FormLabel>
                         <Input

@@ -51,16 +51,14 @@ const HeaderUI: FC = () => {
                             textAlign="center"
                             sx={{color: "white", fontSize: 60, maxWidth: 600}}
                         >
-                            Какая то дичь про тендеры
+                            Поиск тендеров
                         </Typography>
                         <Typography
                             fontSize={20}
                             textAlign="center"
                             sx={{color: "white", maxWidth: 480}}
                         >
-                            Что то про нашу копец прикольную еализацию мф же солодцы такие я прям в шоке от того какие
-                            мы
-                            умные
+                            Предоставляем рекомендационный сервис для поиска приоретизации тендеров
                         </Typography>
                     </Stack>
                 </AspectRatio>
